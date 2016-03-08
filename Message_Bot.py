@@ -14,7 +14,7 @@ subreddit_name = "test"
 #keyword = "Hello World"
 keyword = "[Interactive] Dark SOULS"
 header = "Hello! " + author_name + " has made a new submission regarding " + keyword + " in /r/" +subreddit_name + " : \n\n"
-footer = "\n\nI am a bot! If I'm acting up contact /u/DapperDodger"
+footer = "\n\nI am a bot! If I'm acting up contact /u/" + author_name
 def send_messages(s):
     with open('users.txt') as f:
         users = f.readlines()
