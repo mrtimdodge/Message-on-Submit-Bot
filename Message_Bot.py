@@ -7,7 +7,7 @@ Created on Tue Mar  8 08:34:48 2016
 Change test
 """
 import praw
-import obot_jdmg as obot
+import obot_duel as obot
 import time
 
 r = obot.login()
