@@ -1,5 +1,5 @@
 # Message-on-Submit-Bot
-You'll need to edit obot_jdmg to contian the corretc OAuth info.
+You'll need to edit obot_jdmg to contain the correct OAuth info.
 
 Edit the Message_Bot.py file to change the author name, keyword, and subreddit name its looking for. 
 
