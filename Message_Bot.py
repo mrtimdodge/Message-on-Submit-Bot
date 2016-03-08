@@ -12,7 +12,7 @@ import time
 
 r = obot.login()
 author_name = "DapperDodger"
-subreddit_name = "test"
+subreddit_name = "mousehuntcss"
 start_word = "lumos"
 end_word = "nox"
 bot_word = "duelingbot!"
@@ -23,9 +23,8 @@ results_header = "Hello! Trivia Game results you wanted to know about are up: \n
 
 footer = "\n\nI am a bot! If I'm acting up contact /u/" + author_name
 open_text = "#COMMENT HERE FOR A POKE WHEN QUIZ IS OPEN"
-authorized = []
-with open('authorized.txt') as fin:
-        authorized = fin.readlines()
+
+
 
 def comment_parse(s):
     notStop = True
@@ -57,11 +56,15 @@ def add_comment(s,text):
     s.add_comment(text)
     
 def check_condition_open(s):
-    if s.link_flair_text == "Game":
+    if s.title == "Game":    
+    #if s.link_flair_text == "Game":
             add_comment(s,open_text)
             comment_parse(s)
 
 def check_condition_comments(c):
+    authorized = []
+    with open('authorized.txt') as fin:
+        authorized = fin.readlines()
     if start_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower() and c.author in authorized:
             send_start_messages(c.submission)
             return True
@@ -76,8 +79,9 @@ def check_condition_comments(c):
         return False
     else:
         return True
-            
+    
+if __name__=="__main__":
+   for s in praw.helpers.submission_stream(r,subreddit_name, 1):
+        check_condition_open(s)
         
-for s in praw.helpers.submission_stream(r,subreddit_name, 1):
-    check_condition_open(s)
 
