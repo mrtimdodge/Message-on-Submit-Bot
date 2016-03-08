@@ -23,6 +23,9 @@ results_header = "Hello! Trivia Game results you wanted to know about are up: \n
 
 footer = "\n\nI am a bot! If I'm acting up contact /u/" + author_name
 open_text = "#COMMENT HERE FOR A POKE WHEN QUIZ IS OPEN"
+authorized = []
+with open('authorized.txt') as fin:
+        authorized = fin.readlines()
 
 def comment_parse(s):
     notStop = True
@@ -59,7 +62,7 @@ def check_condition_open(s):
             comment_parse(s)
 
 def check_condition_comments(c):
-    if start_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower():
+    if start_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower() and c.author in authorized:
             send_start_messages(c.submission)
             return True
     elif poke_word.lower() in c.body.lower():
@@ -68,7 +71,7 @@ def check_condition_comments(c):
             f.write(c.author.name + "\n")
             f.close()
             return True
-    elif end_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower():
+    elif end_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower() and c.author in authorized:
         send_result_messages(c.submission)
         return False
     else:
