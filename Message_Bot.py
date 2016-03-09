@@ -27,7 +27,7 @@ open_text = "#COMMENT HERE WITH KEYWORD '"+ poke_word + "' FOR A POKE WHEN QUIZ 
 results_text = "#COMMENT HERE WITH KEYWORD "+ poke_word + "  FOR A POKE WHEN FULL RESULTS ARE UP" #results comment
 
 wait_time = 60 #time to wait between checking comments/messages in seconds
-
+recheck = []
 
 
 def comment_parse(s):
@@ -70,13 +70,32 @@ def check_condition_open(s):
     if s.link_flair_text and s.link_flair_text == "Game":
             add_comment(s,open_text)
             comment_parse(s)
+    elif not s.link_flair_text:
+        noFlair = True
+        startTime = int(time.time())
+        while noFlair:
+            print "Waiting on post with no flair..."
+            currentTime = int(time.time())
+            s.refresh();
+            if s.link_flair_text and s.link_flair_text == "Game":
+                add_comment(s,open_text)
+                comment_parse(s)
+                noFlair = False
+            elif s.link_flair_text or (currentTime - startTime >= 300):
+                print "Not a 'Game' Post"
+                noFlair = False
+            time.sleep(wait_time)
+                
+                
+            
 
 def check_condition_comments(c):
     print "Checking comment for keywords"
     authorized = []
     with open('authorized.txt') as fin:
         authorized = fin.readlines()
-    if start_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower() and c.author.name in authorized:
+    authorized = [element.lower() for element in authorized]
+    if start_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower() and c.author.name.lower() in authorized:
             send_start_messages(c.submission)
             wait_for_message()
             return False
@@ -87,7 +106,7 @@ def check_condition_comments(c):
             print "Added User: " + c.author.name 
             return False
             
-    elif end_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower() and c.author.name in authorized:
+    elif end_word.lower() in c.body.lower() and bot_word.lower() in c.body.lower() and c.author.name.lower() in authorized:
         send_result_messages(c.submission)
         return True
     else:
@@ -98,16 +117,18 @@ def wait_for_message():
     message_received = False
     with open('authorized.txt') as fin:
         authorized = fin.readlines()
+    authorized = [element.lower() for element in authorized]
     while not message_received:
         print "Waiting for results message..."
         mail = r.get_unread()
         if mail:
             for message in mail:
-                if message.subject.lower() == message_word.lower() and message.author and message.author.name in authorized:
+                if message.subject.lower() == message_word.lower() and message.author and message.author.name.lower() in authorized:
                     add_comment(s, message.body + "\n\n" + results_text)
                     message_received = True
                 message.mark_as_read()
         time.sleep(wait_time)
+        
 if __name__=="__main__":
    open('users.txt', 'w').close()
    print "Starting to check submission flair for keyword"
